@@ -2,9 +2,6 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,10 +14,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import entidad.Campeonato;
-import model.CampeonatoModel;
-
-public class FrmConsultaCampeonato extends JFrame implements KeyListener  {
+public class FrmConsultaCampeonato extends JFrame  {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -67,7 +61,6 @@ public class FrmConsultaCampeonato extends JFrame implements KeyListener  {
 		contentPane.add(lblNombre);
 		
 		txtFiltro = new JTextField();
-		txtFiltro.addKeyListener(this);
 		txtFiltro.setBounds(158, 93, 391, 20);
 		contentPane.add(txtFiltro);
 		txtFiltro.setColumns(10);
@@ -90,34 +83,6 @@ public class FrmConsultaCampeonato extends JFrame implements KeyListener  {
 	}
 
 	
-	public void keyPressed(KeyEvent e) {
-	}
-	public void keyReleased(KeyEvent e) {
-		if (e.getSource() == txtFiltro) {
-			handle_txtFiltro_keyReleased(e);
-		}
-	}
-	public void keyTyped(KeyEvent e) {
-	}
-	protected void handle_txtFiltro_keyReleased(KeyEvent e) {
-		String filtro = txtFiltro.getText().trim();
-		
-		//1 Se limpia los datos del jtable
-		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-		dtm.setRowCount(0);
-		
-		//2 Se obtiene los campeonatos de la BD
-		CampeonatoModel model = new CampeonatoModel();
-		List<Campeonato> lista = model.listaCampeonatoPorNombreLike(filtro);
-		
-		//3 Se muestran los campeonatos en el JTABLE
-
-		for (Campeonato x : lista) {
-			Object[] fila = {x.getIdCampeonato(), x.getNombre(), x.getAnnio()};
-			dtm.addRow(fila);
-		}
-		
-	}
 }
 
 

@@ -1,7 +1,6 @@
 package model;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,44 +88,5 @@ public class JugadorModel {
 		return data;
 	}
 	
-	public List<Jugador> listaJugadorPorFecha(String fecIni, String fecFin) {
-		ArrayList<Jugador> data = new ArrayList<Jugador>();
-		Connection con = null;
-		PreparedStatement pstm = null;
-		ResultSet rs = null; //Trae la data de la BD
-		try {
-			con = MySqlDBConexion.getConexion();
-			String sql ="select * from jugador where fechaNacimiento between ? and ?";       
-			pstm = con.prepareStatement(sql);
-			pstm.setDate(1, Date.valueOf(fecIni));
-			pstm.setDate(2, Date.valueOf(fecFin));
-			log.info(">> SQL >> " + pstm);
-			
-			//En rs se trae los datos de la BD segun el SQL
-			rs = pstm.executeQuery();
-			
-			//Se pasa la data del rs al ArrayList(data)
-			Jugador c = null;
-			while(rs.next()){
-				c = new Jugador();
-				// Se colocan los campos de la base de datos
-				c.setIdJugador(rs.getInt("idjugador"));
-				c.setNombre(rs.getString("nombre"));
-				c.setApellido(rs.getString("apellido"));
-				c.setFechaNacimiento(rs.getDate("fechaNacimiento"));
-				data.add(c);
-			}
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null)pstm.close();
-				if (con != null)con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return data;
-	}
+	
 }

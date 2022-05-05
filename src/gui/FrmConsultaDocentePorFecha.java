@@ -2,9 +2,6 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,10 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import entidad.Docente;
-import model.DocenteModel;
-
-public class FrmConsultaDocentePorFecha extends JFrame implements ActionListener {
+public class FrmConsultaDocentePorFecha extends JFrame  {
 
 	/**
 	 * 
@@ -94,7 +88,6 @@ public class FrmConsultaDocentePorFecha extends JFrame implements ActionListener
 		txtFin.setColumns(10);
 		
 		btnFiltrar = new JButton("Filtrar");
-		btnFiltrar.addActionListener(this);
 		btnFiltrar.setBounds(522, 131, 162, 23);
 		contentPane.add(btnFiltrar);
 		
@@ -112,33 +105,7 @@ public class FrmConsultaDocentePorFecha extends JFrame implements ActionListener
 		));
 		scrollPane.setViewportView(table);
 	}
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource() == btnFiltrar) {
-			do_btnFiltrar_actionPerformed(arg0);
-		}
-	}
-	protected void do_btnFiltrar_actionPerformed(ActionEvent arg0) {
-		//1 Se obtiene los datos
-		String fecInicio = txtInicio.getText().trim();
-		String fecFin = txtFin.getText().trim();
-		
-		//2 Las validaciones
-		
-		//3 Se obtiene los datos de la base de datos
-		DocenteModel model = new DocenteModel();
-		List<Docente> data = model.consultaPorFecha(fecInicio, fecFin);
-		
-		//4 Se limpia el jtable de la GUI
-		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-		dtm.setRowCount(0);
-		
-		//5 Se añade la data añl jtable dela GUI
-		for (Docente x : data) {
-			Object[] fila = {x.getIdDocente(), x.getNombre(), x.getDni(), x.getFechaNacimiento()};
-			dtm.addRow(fila);
-		}
-		
-	}
+	
 }
 
 
