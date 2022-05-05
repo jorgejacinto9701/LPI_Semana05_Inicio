@@ -2,6 +2,9 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,10 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmConsultaCampeonato extends JFrame  {
+import entidad.Campeonato;
+import model.CampeonatoModel;
+
+public class FrmConsultaCampeonato extends JFrame implements KeyListener  {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -24,9 +31,11 @@ public class FrmConsultaCampeonato extends JFrame  {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
 					FrmConsultaCampeonato frame = new FrmConsultaCampeonato();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -58,6 +67,7 @@ public class FrmConsultaCampeonato extends JFrame  {
 		contentPane.add(lblNombre);
 		
 		txtFiltro = new JTextField();
+		txtFiltro.addKeyListener(this);
 		txtFiltro.setBounds(158, 93, 391, 20);
 		contentPane.add(txtFiltro);
 		txtFiltro.setColumns(10);
@@ -80,7 +90,41 @@ public class FrmConsultaCampeonato extends JFrame  {
 	}
 
 	
+	public void keyPressed(KeyEvent e) {
+	}
+	public void keyReleased(KeyEvent e) {
+		if (e.getSource() == txtFiltro) {
+			handle_txtFiltro_keyReleased(e);
+		}
+	}
+	public void keyTyped(KeyEvent e) {
+	}
+	protected void handle_txtFiltro_keyReleased(KeyEvent e) {
+		String filtro = txtFiltro.getText().trim();
+		
+		//1 Se limpia los datos del jtable
+		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+		dtm.setRowCount(0);
+		
+		//2 Se obtiene los campeonatos de la BD
+		CampeonatoModel model = new CampeonatoModel();
+		List<Campeonato> lista = model.listaCampeonatoPorNombreLike(filtro);
+		
+		//3 Se muestran los campeonatos en el JTABLE
+
+		for (Campeonato x : lista) {
+			Object[] fila = {x.getIdCampeonato(), x.getNombre(), x.getAnnio()};
+			dtm.addRow(fila);
+		}
+		
+	}
 }
+
+
+
+
+
+
 
 
 

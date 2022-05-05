@@ -2,6 +2,9 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,10 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmConsultaEquipoPorNombre extends JFrame  {
+import entidad.Equipo;
+import model.EquipoModel;
+
+public class FrmConsultaEquipoPorNombre extends JFrame implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -27,6 +34,7 @@ public class FrmConsultaEquipoPorNombre extends JFrame  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
 					FrmConsultaEquipoPorNombre frame = new FrmConsultaEquipoPorNombre();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -58,6 +66,7 @@ public class FrmConsultaEquipoPorNombre extends JFrame  {
 		contentPane.add(lblNombre);
 		
 		txtFiltro = new JTextField();
+		txtFiltro.addKeyListener(this);
 		txtFiltro.setBounds(231, 91, 387, 20);
 		contentPane.add(txtFiltro);
 		txtFiltro.setColumns(10);
@@ -76,6 +85,28 @@ public class FrmConsultaEquipoPorNombre extends JFrame  {
 		));
 		scrollPane.setViewportView(table);
 	}
+	public void keyPressed(KeyEvent arg0) {
+	}
+	public void keyReleased(KeyEvent arg0) {
+		if (arg0.getSource() == txtFiltro) {
+			keyReleasedTxtFiltroJTextField(arg0);
+		}
+	}
+	public void keyTyped(KeyEvent arg0) {
+	}
+	protected void keyReleasedTxtFiltroJTextField(KeyEvent arg0) {
+		String filtro = txtFiltro.getText().trim();
 	
-	
+		EquipoModel m = new EquipoModel();
+		ArrayList<Equipo> lista = m.listaEquipoPorNombre(filtro);
+		
+		DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+		dtm.setRowCount(0);
+		
+		for (Equipo x : lista) {
+			Object[] fila = {x.getIdEquipo(), x.getNombre(), x.getPais()};
+			dtm.addRow(fila);
+		}
+		
+	}
 }

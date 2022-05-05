@@ -139,16 +139,18 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 	protected void handle_btnRegistrar_actionPerformed(ActionEvent e) {
 			String nom = txtNombre.getText();
 			String ruc = txtRuc.getText();
-			Date fec = new Date(txtFec.getDate().getTime());
 			String sed = cboSede.getSelectedItem().toString();
 		
 			if (!nom.matches(Validaciones.TEXTO)) {
 				mensaje("El nombre es de 2 a 20 caracteres");
 			}else if (!ruc.matches(Validaciones.RUC)) {
-				mensaje("El ruc es de 11 dígitos");
+				mensaje("El ruc es de 11 digitos");
+			}else if (txtFec.getDate()== null) {
+				mensaje("Seleccione la fecha");
 			}else if (cboSede.getSelectedIndex() ==0) {
 				mensaje("Seleccione la Sede");
 			}else {
+					Date fec = new Date(txtFec.getDate().getTime());
 					Empresa obj = new Empresa();
 					obj.setNombre(nom);
 					obj.setRuc(ruc);
@@ -173,12 +175,12 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 		}
 	}
 	protected void handle_txtRuc_keyTyped(KeyEvent e) {
-		//Si no es dígito anulamos el evento
+		//Si no es digito anulamos el evento
 		if (!Character.isDigit(e.getKeyChar())) {
 			e.consume();
 		}
 		
-		//El ruc si es más de 11 anulamos el evento
+		//El ruc si es mas de 11 anulamos el evento
 		String ruc = txtRuc.getText() + e.getKeyChar();
 		if (ruc.length()>11) {
 			e.consume();

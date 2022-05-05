@@ -2,6 +2,9 @@ package gui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,10 +15,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-public class FrmConsultaConcursoPorPremio extends JFrame  {
+import entidad.Concurso;
+import model.ConcursoModel;
+import util.Validaciones;
+
+public class FrmConsultaConcursoPorPremio extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -31,6 +39,7 @@ public class FrmConsultaConcursoPorPremio extends JFrame  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel("com.jtattoo.plaf.smart.SmartLookAndFeel");
 					FrmConsultaConcursoPorPremio frame = new FrmConsultaConcursoPorPremio();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -72,6 +81,7 @@ public class FrmConsultaConcursoPorPremio extends JFrame  {
 		txtHasta.setColumns(10);
 		
 		btnFiltrar = new JButton("Filtrar");
+		btnFiltrar.addActionListener(this);
 		btnFiltrar.setBounds(550, 98, 89, 23);
 		contentPane.add(btnFiltrar);
 		
@@ -89,7 +99,38 @@ public class FrmConsultaConcursoPorPremio extends JFrame  {
 		));
 		scrollPane.setViewportView(table);
 	}
-	
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == btnFiltrar) {
+			handleBtnFiltrarActionPerformed(arg0);
+		}
+	}
+	protected void handleBtnFiltrarActionPerformed(ActionEvent arg0) {
+		String desde = txtDesde.getText().trim();
+		String hasta = txtHasta.getText().trim();
+		
+		if(desde.matches(Validaciones.PREMIO)== false) {
+			mensaje("El premio desde es un número entero o real");
+		}else if(hasta.matches(Validaciones.PREMIO)== false) {
+			mensaje("El premio hasta es un número entero o real");
+		}else if(Double.parseDouble(desde)>Double.parseDouble(hasta)) {
+			mensaje("El premio hasta debe ser superior al premio desde");
+		}else {
+			double des = Double.parseDouble(desde);
+			double has = Double.parseDouble(hasta);
+			
+			ConcursoModel m = new ConcursoModel();
+			ArrayList<Concurso> lista = m.listaConcursoPorPremio(des, has);
+			
+			DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+			dtm.setRowCount(0);
+			
+			for (Concurso x : lista) {
+				Object[] fila = {x.getIdConcurso(), x.getNombre(), x.getPrecio(), x.getPremio()};
+				dtm.addRow(fila);
+			}
+		}
+		
+	}
 	
 	void mensaje(String msg) {
 		JOptionPane.showMessageDialog(this, msg);
