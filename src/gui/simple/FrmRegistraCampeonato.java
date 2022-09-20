@@ -1,4 +1,4 @@
-package gui;
+package gui.simple;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -101,6 +101,7 @@ public class FrmRegistraCampeonato extends JFrame implements ActionListener {
 			Campeonato obj = new Campeonato();
 			obj.setNombre(nom);
 			obj.setAnnio(Integer.parseInt(annio));
+			obj.setEstado(1);
 			
 			CampeonatoModel model = new CampeonatoModel();
 			int salida = model.insertaCampeonato(obj);

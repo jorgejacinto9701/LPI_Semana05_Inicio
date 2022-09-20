@@ -21,12 +21,13 @@ public class EmpresaModel {
 			conn = MySqlDBConexion.getConexion();
 			
 			//2 Se prepara el SQL
-			String sql = "insert into empresa values(null,?,?,?,?, curtime(), 1)";
+			String sql = "insert into empresa values(null,?,?,?,?, curtime(), ?)";
 			pstm = conn.prepareStatement(sql);
 			pstm.setString(1, obj.getNombre());
 			pstm.setString(2, obj.getRuc());
 			pstm.setDate(3, obj.getFechaCreacion());
 			pstm.setString(4, obj.getSede());
+			pstm.setInt(5, obj.getEstado());
 			
 			log.info(">> SQL >> " + pstm);
 			

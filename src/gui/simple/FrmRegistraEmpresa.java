@@ -1,4 +1,4 @@
-package gui;
+package gui.simple;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.sql.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,22 +20,21 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
-import com.toedter.calendar.JDateChooser;
-
 import entidad.Empresa;
 import model.EmpresaModel;
+import util.Conversiones;
 import util.Validaciones;
 
-public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListener, KeyListener {
+public class FrmRegistraEmpresa extends JFrame implements ActionListener, KeyListener {
 
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNombre;
 	private JTextField txtRuc;
+	private JTextField txtFec;
 	private JButton btnRegistrar;
 	private JComboBox<String> cboSede;
-	private JDateChooser txtFec;
 	
 	/**
 	 * Launch the application.
@@ -53,7 +51,7 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FrmRegistraEmpresaDatePicker frame = new FrmRegistraEmpresaDatePicker();
+					FrmRegistraEmpresa frame = new FrmRegistraEmpresa();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,7 +63,7 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 	/**
 	 * Create the frame.
 	 */
-	public FrmRegistraEmpresaDatePicker() {
+	public FrmRegistraEmpresa() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -102,6 +100,11 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 		lblFechaCreacin.setBounds(97, 133, 97, 14);
 		contentPane.add(lblFechaCreacin);
 		
+		txtFec = new JTextField();
+		txtFec.setColumns(10);
+		txtFec.setBounds(204, 130, 164, 20);
+		contentPane.add(txtFec);
+		
 		JLabel lblSedes = new JLabel("Sedes");
 		lblSedes.setBounds(97, 161, 64, 14);
 		contentPane.add(lblSedes);
@@ -119,11 +122,6 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 		cboSede.addItem("Tacna");
 		cboSede.setBounds(204, 161, 164, 22);
 		contentPane.add(cboSede);
-		
-		txtFec = new JDateChooser();
-		txtFec.setDateFormatString("yyyy-MM-dd");
-		txtFec.setBounds(204, 133, 164, 20);
-		contentPane.add(txtFec);
 	}
 	
 	
@@ -139,23 +137,25 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 	protected void handle_btnRegistrar_actionPerformed(ActionEvent e) {
 			String nom = txtNombre.getText();
 			String ruc = txtRuc.getText();
+			String fec = txtFec.getText();
 			String sed = cboSede.getSelectedItem().toString();
 		
 			if (!nom.matches(Validaciones.TEXTO)) {
 				mensaje("El nombre es de 2 a 20 caracteres");
 			}else if (!ruc.matches(Validaciones.RUC)) {
-				mensaje("El ruc es de 11 digitos");
-			}else if (txtFec.getDate()== null) {
-				mensaje("Seleccione la fecha");
+				mensaje("El ruc es de 11 dígitos");
+			}else if (!fec.matches(Validaciones.FECHA)) {
+				mensaje("La fecha es de formato yyyy-MM-dd");
 			}else if (cboSede.getSelectedIndex() ==0) {
 				mensaje("Seleccione la Sede");
 			}else {
-					Date fec = new Date(txtFec.getDate().getTime());
 					Empresa obj = new Empresa();
 					obj.setNombre(nom);
 					obj.setRuc(ruc);
-					obj.setFechaCreacion(fec);
+					obj.setFechaCreacion(Conversiones.toFecha(fec));
 					obj.setSede(sed);
+					obj.setEstado(1);
+					
 					EmpresaModel model = new EmpresaModel();
 					int salida = model.insertaEmpresa(obj);
 					if (salida>0) {
@@ -175,12 +175,12 @@ public class FrmRegistraEmpresaDatePicker extends JFrame implements ActionListen
 		}
 	}
 	protected void handle_txtRuc_keyTyped(KeyEvent e) {
-		//Si no es digito anulamos el evento
+		//Si no es dígito anulamos el evento
 		if (!Character.isDigit(e.getKeyChar())) {
 			e.consume();
 		}
 		
-		//El ruc si es mas de 11 anulamos el evento
+		//El ruc si es más de 11 anulamos el evento
 		String ruc = txtRuc.getText() + e.getKeyChar();
 		if (ruc.length()>11) {
 			e.consume();

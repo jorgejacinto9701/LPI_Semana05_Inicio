@@ -18,6 +18,6 @@ public class Validaciones {
 
 	public static final String ANHO = "[0-9]{4}";
 	public static final String RUC = "[0-9]{11}";
-	public static final String PREMIO = "\\d+[.]\\d";
+	
 	
 }
